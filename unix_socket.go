@@ -1,3 +1,5 @@
+// Package socket provides helpers for working with Unix domain
+// sockets.
 package socket
 
 import (
@@ -22,8 +24,10 @@ func isConnectionRefused(err error) bool {
 	return false
 }
 
+// Listen attempts to listen on a unix socket given by path. If a
+// socket already exists but doesn't accept connections assume that
+// it's a stale socket, delete it and try again.
 func Listen(path string, perms int) (*net.UnixListener, error) {
-
 	addr, err := net.ResolveUnixAddr("unix", path)
 	if err != nil {
 		return nil, err
