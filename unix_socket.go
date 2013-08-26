@@ -23,12 +23,6 @@ func isConnectionRefused(err error) bool {
 }
 
 func Listen(path string, perms int) (*net.UnixListener, error) {
-	var oldMask int
-	defer func() {
-		if perms != 0 {
-			syscall.Umask(oldMask)
-		}
-	}()
 
 	addr, err := net.ResolveUnixAddr("unix", path)
 	if err != nil {
@@ -36,7 +30,10 @@ func Listen(path string, perms int) (*net.UnixListener, error) {
 	}
 
 	if perms != 0 {
-		oldMask = syscall.Umask(0777 ^ perms)
+		oldMask := syscall.Umask(0777 ^ perms)
+		defer func() {
+			syscall.Umask(oldMask)
+		}()
 	}
 
 	l, firstErr := net.ListenUnix("unix", addr)
