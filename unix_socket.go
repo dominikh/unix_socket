@@ -64,13 +64,3 @@ func Listen(path string, perms int) (*net.UnixListener, error) {
 
 	return l, err
 }
-
-func main() {
-	l, err := Listen("./socket", 0)
-	if err != nil {
-		panic(err)
-	}
-	l.Accept()
-	for {
-	}
-}
